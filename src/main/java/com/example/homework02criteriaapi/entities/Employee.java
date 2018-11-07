@@ -7,14 +7,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "empType")
-
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id"
 )
-public abstract class Employee {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +25,8 @@ public abstract class Employee {
     @Embedded
     private Address address;
 
+    private Double salary;
+
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, targetEntity = Department.class)
     private Department department;
 
@@ -37,10 +36,18 @@ public abstract class Employee {
     public Employee() {
     }
 
-    public Employee(String empName, Gender gender, Address address, Department department, Account account) {
+    public Employee(String empName, Gender gender, Address address, Double salary) {
         this.empName = empName;
         this.gender = gender;
         this.address = address;
+        this.salary = salary;
+    }
+
+    public Employee(String empName, Gender gender, Address address, Double salary, Department department, Account account) {
+        this.empName = empName;
+        this.gender = gender;
+        this.address = address;
+        this.salary = salary;
         this.department = department;
         this.account = account;
     }
@@ -93,6 +100,14 @@ public abstract class Employee {
         this.account = account;
     }
 
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -100,6 +115,7 @@ public abstract class Employee {
                 ", empName='" + empName + '\'' +
                 ", gender=" + gender +
                 ", address=" + address +
+                ", salary=" + salary +
                 ", account=" + account +
                 '}';
     }
